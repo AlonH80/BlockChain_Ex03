@@ -44,9 +44,10 @@ mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params)
 	else if (i_params.conn_type == CONNECT)
 	{
 		tmp_q = mq_open(q_name, flags);
+		printf("tmp_q=%d\n", tmp_q);
 	}
 	
-	if(tmp_q == -1)
+	if(tmp_q == (mqd_t)-1)
 	{
 		fprintf(stderr, "mq_open failure of queue: %s, exiting...\n", q_name);
         perror("The error is:");

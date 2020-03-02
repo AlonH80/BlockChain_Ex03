@@ -95,13 +95,12 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
 
 	/* Initialize attributes and estabilish connection to the server*/
 	params_to_servers_q.conn_type = CONNECT;
-	params_to_servers_q.msg_pass_type = NON_BLOCK;
     *io_servers_mq = open_queue(MQ_NAME, params_to_servers_q);
     printf("*io_servers_mq = %d\n", *io_servers_mq);
 	
 	if(*io_servers_mq == -1)
 	{
-		fprintf(stderr, "Server Unavalible, exiting...\n");
+		fprintf(stderr, "Server Unavailable, exiting...\n");
         perror("The error is:");
 		exit(EXIT_FAILURE);
 	}
@@ -158,7 +157,7 @@ main(int argc, char *argv[])
 		{
 			if(curr_head_block == NULL)
 			{
-			    printf("Wait for server...");
+			    printf("Wait for server...\r");
 				sleep(1);	//To "slow down" busy waiting little bit.
 				continue;
 			}	
