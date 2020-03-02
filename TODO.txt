@@ -1,0 +1,11 @@
+1. add verifications of success\failure to all MQ and other functions
+2. check a way to implement strtok with while loop and array of ptr's to fields of bitcoin.
+3. add verifications and print msg when sent or\and rcv Q's are full.
+4. in string production consider the folowing :
+	//while( token != NULL ) {
+    //	token = strtok(NULL, s);
+    //	some struct of pointers to fields of block = token;
+	//}
+5. Generate Program False Loop Proccess (from Ex2) and decide when to activate it and how many times?
+6. change servers Q name from MQ_NAME to something logical in all places.
+7. maybe turn the connection between server and miner to happen in the function initiate_connection_with_server.
