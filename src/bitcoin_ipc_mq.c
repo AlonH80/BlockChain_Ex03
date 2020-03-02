@@ -39,6 +39,7 @@ mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params)
 		}
 
 		tmp_q = mq_open(q_name, flags, S_IRWXU | S_IRWXG, &attr);
+        printf("tmp_q=%d\n", tmp_q);
 	}
 	
 	else if (i_params.conn_type == CONNECT)
