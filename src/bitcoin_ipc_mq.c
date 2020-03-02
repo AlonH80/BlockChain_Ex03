@@ -43,15 +43,30 @@ mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params)
 	
 	else if (i_params.conn_type == CONNECT)
 	{
-		tmp_q = mq_open(q_name, flags | O_NONBLOCK);
+	    EBoolType q_opened = FALSE;
+	    while(!q_opened)
+	    {
+            tmp_q = mq_open(q_name, flags | O_NONBLOCK);
+            if (errno == ENOENT)
+            {
+                printf("Wait for server to init..\n");
+                sleep(1);
+
+            }
+            else
+            {
+                q_opened = TRUE;
+            }
+	    }
 	}
 	
-	if(tmp_q == (mqd_t)-1)
+	if(tmp_q == -1)
 	{
 		fprintf(stderr, "mq_open failure of queue: %s, exiting...\n", q_name);
         perror("The error is:");
 		exit(EXIT_FAILURE);
 	}
+
 
 	return tmp_q;
 }

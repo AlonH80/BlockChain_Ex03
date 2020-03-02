@@ -6,7 +6,7 @@ LDFLAGS=-lm -lpthread -lz -lrt
 SRCDIR:= src
 SO_LINK_PARAMETERS:= -shared -fPIC
 
-all: server.out miner.out
+all: server.out miner.out unlinker.out
 
 server.out : lib_mq_ipc_manager.so
 
