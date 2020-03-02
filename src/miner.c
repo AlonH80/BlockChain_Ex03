@@ -105,7 +105,7 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
 	params_to_miners_q.msg_pass_type = NON_BLOCK;
     printf("Miner ID = %d, queue name = %s\n",miners_details.miners_id, miners_q_name);
 
-	/* Estabilish new Q for miner and sent MSG with connection detailes to Server, for it to connect*/
+	/* Estabilish new Q for miner and sent MSG with connection details to Server, for it to connect*/
     msg = malloc(sizeof(MSG_PACK_T) + sizeof(INIT_MSG_DATA_T));
     msg->type = INIT;
     ((INIT_MSG_DATA_T*)msg->data)->miners_id = miners_details.miners_id; 
