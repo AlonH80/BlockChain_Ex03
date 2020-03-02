@@ -155,7 +155,8 @@ main(int argc, char *argv[])
 		else
 		{
 			if(curr_head_block == NULL)
-			{				
+			{
+			    printf("Wait for server...");
 				sleep(1);	//To "slow down" busy waiting little bit.
 				continue;
 			}	
