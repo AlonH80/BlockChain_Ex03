@@ -16,7 +16,7 @@
 bitcoin_block_data* get_current_block_from_server();
 bitcoin_block_data* initialize_new_block(bitcoin_block_data* i_head_block);
 EBoolType verify_block_is_relevant(bitcoin_block_data* i_block);
-void mine_block(bitcoin_block_data* i_block, Uint i_miner_id);
+EBoolType mine_block(bitcoin_block_data* i_block, Uint i_miner_id, mqd_t mq_listen);
 void send_block_to_server(bitcoin_block_data* i_block);
 void print_mine_msg(bitcoin_block_data* i_block);
 void usage_err(int count);
@@ -41,20 +41,26 @@ initialize_new_block(bitcoin_block_data* i_head_block)
 }
 
 PRIVATE
-void
-mine_block(bitcoin_block_data* i_block, Uint i_miner_id)
+EBoolType
+mine_block(bitcoin_block_data* i_block, Uint i_miner_id, mqd_t mq_listen)
 {
     i_block->relayed_by = i_miner_id;
+    EBoolType block_relevant = TRUE;
 
     do
     {
         i_block->nonce = get_random();
         i_block->time_stamp = get_current_time_stamp();
         i_block->hash = create_hash_from_block(i_block);
+        block_relevant = !check_for_new_msgs(mq_listen);
     }
-    while (!check_difficulty(i_block->hash, DIFFICULTY));
+    while (!check_difficulty(i_block->hash, DIFFICULTY) && block_relevant);
 
-    print_mine_msg(i_block);
+    if (block_relevant==TRUE)
+    {
+        print_mine_msg(i_block);
+    }
+    return block_relevant;  // Mine will succeed only if the block is relevant
 }
 
 PRIVATE
@@ -132,6 +138,7 @@ main(int argc, char *argv[])
     MSG_PACK_T *response;
 	Uint miner_id = (Uint)atoi(argv[1]);
 	mqd_t servers_mq;
+	EBoolType mine_succeed;
 	
 	mqd_t miners_bitcoin_mq = set_miners_q_and_connect_srv(miner_id, &servers_mq);
 	
@@ -155,17 +162,19 @@ main(int argc, char *argv[])
 		}
 		
 		new_mined_block = initialize_new_block(curr_head_block);
-		mine_block(new_mined_block, miner_id);
-		response = malloc(sizeof(MSG_PACK_T) + sizeof(MINE_MSG_DATA_T));
-        response->type = MINE;
-        ((MINE_MSG_DATA_T*)response->data)->block_detailes = *new_mined_block;
+        mine_succeed = mine_block(new_mined_block, miner_id, miners_bitcoin_mq);
+        if (mine_succeed) {
+            response = malloc(sizeof(MSG_PACK_T) + sizeof(MINE_MSG_DATA_T));
+            response->type = MINE;
+            ((MINE_MSG_DATA_T *) response->data)->block_detailes = *new_mined_block;
 
-        printf("Sent:\n");
-        print_bitcoin_block_data(new_mined_block);
-        printf("\n");
+            printf("Sent:\n");
+            print_bitcoin_block_data(new_mined_block);
+            printf("\n");
 
-		msg_send(servers_mq, (char*)response);
-        sleep(2);   //To "slow down" the mining litle bit.
+            msg_send(servers_mq, (char *) response);
+            sleep(2);   //To "slow down" the mining litle bit.
+        }
     }
     
 	return 0;

@@ -126,13 +126,11 @@ bitcoin_msg_rcv_and_handle(void)
 		msg_send(g_bitcoin_mq[g_total_miners_joined], (char*)response);
 	}
 
-	// It can't be mine, because the mine is in separate queue
 	else if (rcvd_msg->type == MINE)
 	{
 		bitcoin_block_data *newly_mined_block = malloc(sizeof(bitcoin_block_data));
 		*newly_mined_block = ((MINE_MSG_DATA_T*)rcvd_msg->data)->block_detailes;
 		treat_suggested_block(newly_mined_block);
-		//free(newly_mined_block);
 	}
 		
 	free(rcvd_msg);
@@ -196,12 +194,8 @@ main(void)
 
 	while(g_blockchain->length < 100)
     {
-//		if(check_for_new_msgs(g_bitcoin_mq[SERVER_Q]))
-//		{
-			bitcoin_msg_rcv_and_handle();
-            sleep(2);
-            printf("Curr height is %d\n", curr_head.height);
-//		}
+        bitcoin_msg_rcv_and_handle();
+        printf("Curr height is %d\n", curr_head.height);
 	}
 
     destroy_List(g_blockchain);
