@@ -49,13 +49,14 @@ mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params)
             tmp_q = mq_open(q_name, flags);
             if (errno == ENOENT)
             {
-                printf("Wait for %s to init..\n", q_name);
+                printf("Wait for %s to init..\r", q_name);
                 errno = 0;
                 sleep(1);
             }
             else
             {
                 q_opened = TRUE;
+                printf("\n");
             }
 	    }
 	}
