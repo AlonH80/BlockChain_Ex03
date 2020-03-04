@@ -97,12 +97,12 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
 	params_to_servers_q.conn_type = CONNECT;
     *io_servers_mq = open_queue(MQ_NAME, params_to_servers_q);
 	
-//	if(*io_servers_mq == -1)
-//	{
-//		fprintf(stderr, "Server Unavailable, exiting...\n");
-//        perror("The error is:");
-//		exit(EXIT_FAILURE);
-//	}
+	if(*io_servers_mq == -1)
+	{
+		fprintf(stderr, "Server Unavailable, exiting...\n");
+        perror("The error is:");
+		exit(EXIT_FAILURE);
+	}
 
 	/* Initialize miner's new Q attributes */
 	miners_details.miners_id = i_miners_id;
@@ -118,6 +118,13 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
 
     msg_send(*io_servers_mq, (char*)msg);
     miners_mq = open_queue(miners_q_name, params_to_miners_q);
+
+    if(miners_mq == -1)
+    {
+        fprintf(stderr, "miners_q Unavailable, exiting...\n");
+        perror("The error is:");
+        exit(EXIT_FAILURE);
+    }
 
     printf("Miner %d sent connection request on %s\n",miners_details.miners_id, miners_q_name);
 
@@ -157,7 +164,7 @@ main(int argc, char *argv[])
 		{
 			if(curr_head_block == NULL)
 			{
-			    printf("Wait for server...\r");
+			    printf("Wait for server...\n");
 				sleep(1);	//To "slow down" busy waiting little bit.
 				continue;
 			}	
