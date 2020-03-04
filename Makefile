@@ -10,7 +10,7 @@ all: server.out miner.out unlinker.out
 
 server.out : lib_mq_ipc_manager.so
 
-lib_mq_ipc_manager.so: $(SRCDIR)/linked_list.o $(SRCDIR)/bitcoin_ipc_mq.o $(SRCDIR)/utility.o $(SRCDIR)/bitcoin.o $(SRCDIR)/server.o $(SRCDIR)/unlinker.o
+lib_mq_ipc_manager.so: $(SRCDIR)/linked_list.o $(SRCDIR)/bitcoin_ipc_mq.o $(SRCDIR)/utility.o $(SRCDIR)/bitcoin.o $(SRCDIR)/server.o
 	 $(CC) $(SO_LINK_PARAMETERS) $^ $(LDFLAGS) -o $@
 	
 %.out: $(SRCDIR)/%.o lib_mq_ipc_manager.so
