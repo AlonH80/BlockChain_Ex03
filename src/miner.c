@@ -114,10 +114,11 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
 	/* Estabilish new Q for miner and sent MSG with connection details to Server, for it to connect*/
     msg = malloc(sizeof(MSG_PACK_T) + sizeof(INIT_MSG_DATA_T));
     msg->type = INIT;
-    ((INIT_MSG_DATA_T*)msg->data)->miners_id = miners_details.miners_id; 
+    ((INIT_MSG_DATA_T*)msg->data)->miners_id = miners_details.miners_id;
 
-	miners_mq = open_queue(miners_q_name, params_to_miners_q);
-	msg_send(*io_servers_mq, (char*)msg);
+    msg_send(*io_servers_mq, (char*)msg);
+    miners_mq = open_queue(miners_q_name, params_to_miners_q);
+
     printf("Miner %d sent connection request on %s\n",miners_details.miners_id, miners_q_name);
 
 	return miners_mq;
