@@ -51,6 +51,7 @@ mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params)
             if (errno == ENOENT)
             {
                 printf("Wait for %s to init..\n", q_name);
+                mq_unlink(q_name);
                 sleep(1);
             }
             else

@@ -97,12 +97,12 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
 	params_to_servers_q.conn_type = CONNECT;
     *io_servers_mq = open_queue(MQ_NAME, params_to_servers_q);
 	
-	if(*io_servers_mq == -1)
-	{
-		fprintf(stderr, "Server Unavailable, exiting...\n");
-        perror("The error is:");
-		exit(EXIT_FAILURE);
-	}
+//	if(*io_servers_mq == -1)
+//	{
+//		fprintf(stderr, "Server Unavailable, exiting...\n");
+//        perror("The error is:");
+//		exit(EXIT_FAILURE);
+//	}
 
 	/* Initialize miner's new Q attributes */
 	miners_details.miners_id = i_miners_id;
