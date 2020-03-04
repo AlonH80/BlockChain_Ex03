@@ -17,7 +17,12 @@ mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params)
     
 	/* initialize the queue attributes */
 	struct mq_attr attr = QUEUE_ATTR_INITIALIZER;
-	
+
+    if(i_params.msg_pass_type == NON_BLOCK)
+    {
+        flags |= O_NONBLOCK;
+    }
+
 	if(i_params.conn_type == CREAT)
 	{
 		flags |= O_CREAT;
@@ -32,11 +37,6 @@ mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params)
     			exit(EXIT_FAILURE);
             }
 		}
-		
-		if(i_params.msg_pass_type == NON_BLOCK)
-		{
-			flags |= O_NONBLOCK;
-		}
 
 		tmp_q = mq_open(q_name, flags, S_IRWXU | S_IRWXG, &attr);
 	}
@@ -46,12 +46,12 @@ mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params)
 	    EBoolType q_opened = FALSE;
 	    while(!q_opened)
 	    {
-            tmp_q = mq_open(q_name, flags | O_NONBLOCK);
+            tmp_q = mq_open(q_name, flags);
+            printf("errno == ENOENT = %d\n", errno == ENOENT);
             if (errno == ENOENT)
             {
-                printf("Wait for server to init..\n");
+                printf("Wait for %s to init..\n", q_name);
                 sleep(1);
-
             }
             else
             {
