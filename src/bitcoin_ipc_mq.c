@@ -68,7 +68,6 @@ mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params)
 		exit(EXIT_FAILURE);
 	}
 
-
 	return tmp_q;
 }
 
