@@ -96,7 +96,6 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
 	/* Initialize attributes and estabilish connection to the server*/
 	params_to_servers_q.conn_type = CONNECT;
     *io_servers_mq = open_queue(MQ_NAME, params_to_servers_q);
-    printf("*io_servers_mq = %d\n", *io_servers_mq);
 	
 	if(*io_servers_mq == -1)
 	{
@@ -108,7 +107,7 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
 	/* Initialize miner's new Q attributes */
 	miners_details.miners_id = i_miners_id;
 	miners_q_name = set_miners_q_name(miners_details.miners_id);
-	params_to_miners_q.conn_type = CREAT;
+	params_to_miners_q.conn_type = CONNECT;
 	params_to_miners_q.msg_pass_type = NON_BLOCK;
     printf("Miner ID = %d, queue name = %s\n",miners_details.miners_id, miners_q_name);
 
