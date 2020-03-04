@@ -47,8 +47,6 @@ mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params)
 	    while(!q_opened)
 	    {
             tmp_q = mq_open(q_name, flags);
-            printf("errno == ENOENT = %d\n", errno == ENOENT);
-            printf("tmp_q = %d\n", tmp_q);
             if (errno == ENOENT)
             {
                 printf("Wait for %s to init..\n", q_name);
