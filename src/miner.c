@@ -89,7 +89,7 @@ mqd_t
 set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
 {
     *io_servers_mq = connect_server();
-    mqd_t miners_mq = init_miner_queue(i_miners_id, **io_servers_mq);
+    mqd_t miners_mq = init_miner_queue(i_miners_id, *io_servers_mq);
 
 	return miners_mq;
 }
@@ -98,7 +98,7 @@ PRIVATE
 mqd_t
 connect_server()
 {
-    mqd_t server_q_d
+    mqd_t server_q_d;
     Q_PARAMS_T params_to_servers_q;
 
     params_to_servers_q.conn_type = CONNECT;
