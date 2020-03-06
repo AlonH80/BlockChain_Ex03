@@ -108,7 +108,7 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
 	miners_details.miners_id = i_miners_id;
 	miners_q_name = set_miners_q_name(miners_details.miners_id);
 	params_to_miners_q.conn_type = CONNECT;
-	//params_to_miners_q.msg_pass_type = NON_BLOCK;
+	params_to_miners_q.msg_pass_type = NON_BLOCK;
     printf("Miner ID = %d, queue name = %s\n",miners_details.miners_id, miners_q_name);
 
 	/* Estabilish new Q for miner and sent MSG with connection details to Server, for it to connect*/
@@ -117,7 +117,17 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
     ((INIT_MSG_DATA_T*)msg->data)->miners_id = miners_details.miners_id;
 
     msg_send(*io_servers_mq, (char*)msg);
-    miners_mq = open_queue(miners_q_name, params_to_miners_q);
+    int tries = 0; int max_tries = 10;
+    do{
+        miners_mq = open_queue(miners_q_name, params_to_miners_q);
+        tries++;
+        if(miners_mq == -1)
+        {
+            printf("Connection to %s wasn't established (try :%d)\n", miners_q_name, tries);
+            sleep(1);
+        }
+    } while(miners_mq == -1 && tries < max_tries);
+
 
     if(miners_mq == -1)
     {
