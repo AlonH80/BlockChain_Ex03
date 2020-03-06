@@ -27,6 +27,8 @@ bitcoin_block_data* createGenesis();
 void bitcoin_msg_rcv_and_handle(void);
 void treat_suggested_block(bitcoin_block_data* i_curr_candidate);
 void anounce_new_head();
+void handle_mine(MSG_PACK_T* rcvd_msg);
+void handle_init(MSG_PACK_T* rcvd_msg);
 
 //---------------------------------------------------------------------------
 //-----------------------Private Methods Implementations---------------------
@@ -112,28 +114,42 @@ void
 bitcoin_msg_rcv_and_handle(void)
 {
 	MSG_PACK_T* rcvd_msg = msg_rcv(g_bitcoin_mq[0]);
-	MSG_PACK_T *response;		
 
 	if (rcvd_msg->type == INIT)
 	{
-		INIT_MSG_DATA_T *new_miner_conn = malloc(sizeof(INIT_MSG_DATA_T));
-		new_miner_conn = (INIT_MSG_DATA_T*)rcvd_msg->data;
-
-		g_bitcoin_mq[++g_total_miners_joined] = join_miners_q(new_miner_conn->miners_id);
-        response = malloc(sizeof(MSG_PACK_T) + sizeof(MINE_MSG_DATA_T));
-        response->type = MINE;
-        ((MINE_MSG_DATA_T*)response->data)->block_detailes = curr_head;
-		msg_send(g_bitcoin_mq[g_total_miners_joined], (char*)response);
+		handle_init(rcvd_msg);
 	}
 
 	else if (rcvd_msg->type == MINE)
 	{
-		bitcoin_block_data *newly_mined_block = malloc(sizeof(bitcoin_block_data));
-		*newly_mined_block = ((MINE_MSG_DATA_T*)rcvd_msg->data)->block_detailes;
-		treat_suggested_block(newly_mined_block);
+        handle_mine(rcvd_msg);
 	}
-		
-	free(rcvd_msg);
+    free(rcvd_msg);
+}
+
+PRIVATE
+void
+handle_init(MSG_PACK_T* rcvd_msg)
+{
+    MSG_PACK_T *response;
+    INIT_MSG_DATA_T *new_miner_conn = malloc(sizeof(INIT_MSG_DATA_T));
+    new_miner_conn = (INIT_MSG_DATA_T*)rcvd_msg->data;
+
+    g_bitcoin_mq[++g_total_miners_joined] = join_miners_q(new_miner_conn->miners_id);
+    response = malloc(sizeof(MSG_PACK_T) + sizeof(MINE_MSG_DATA_T));
+    response->type = MINE;
+    ((MINE_MSG_DATA_T*)response->data)->block_detailes = curr_head;
+    msg_send(g_bitcoin_mq[g_total_miners_joined], (char*)response);
+    free(response);
+}
+
+PRIVATE
+void
+handle_mine(MSG_PACK_T* rcvd_msg)
+{
+    bitcoin_block_data *newly_mined_block = malloc(sizeof(bitcoin_block_data));
+    *newly_mined_block = ((MINE_MSG_DATA_T*)rcvd_msg->data)->block_detailes;
+    treat_suggested_block(newly_mined_block);
 }
 
 PRIVATE

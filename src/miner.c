@@ -21,6 +21,8 @@ void send_block_to_server(bitcoin_block_data* i_block);
 void print_mine_msg(bitcoin_block_data* i_block);
 void usage_err(int count);
 mqd_t set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq);
+mqd_t connect_server();
+mqd_t init_miner_queue(Uint i_miners_id);
 
 //---------------------------------------------------------------------------
 //-----------------------Private Methods Implementations---------------------
@@ -86,49 +88,54 @@ PRIVATE
 mqd_t
 set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
 {
-    char* miners_q_name;
-	Q_PARAMS_T params_to_miners_q, params_to_servers_q;
-	INIT_MSG_DATA_T miners_details;
-	mqd_t miners_mq;
-    MSG_PACK_T *msg;
+    *io_servers_mq = connect_server();
+    mqd_t miners_mq = init_miner_queue(i_miners_id)
 
+	return miners_mq;
+}
 
-	/* Initialize attributes and estabilish connection to the server*/
-	params_to_servers_q.conn_type = CONNECT;
-    *io_servers_mq = open_queue(MQ_NAME, params_to_servers_q);
-	
-	if(*io_servers_mq == -1)
-	{
-		fprintf(stderr, "Server Unavailable, exiting...\n");
+PRIVATE
+mqd_t
+connect_server()
+{
+    mqd_t server_q_d
+    Q_PARAMS_T params_to_servers_q;
+
+    params_to_servers_q.conn_type = CONNECT;
+    server_q_d = open_queue(MQ_NAME, params_to_servers_q);
+
+    if(server_q_d == -1)
+    {
+        fprintf(stderr, "Server Unavailable, exiting...\n");
         perror("The error is:");
-		exit(EXIT_FAILURE);
-	}
+        exit(EXIT_FAILURE);
+    }
 
-	/* Initialize miner's new Q attributes */
-	miners_details.miners_id = i_miners_id;
-	miners_q_name = set_miners_q_name(miners_details.miners_id);
-	params_to_miners_q.conn_type = CREAT;
-	params_to_miners_q.msg_pass_type = NON_BLOCK;
+    return server_q_d;
+}
+
+PRIVATE
+mqd_t
+init_miner_queue(Uint i_miners_id)
+{
+    char* miners_q_name;
+    Q_PARAMS_T params_to_miners_q;
+    INIT_MSG_DATA_T miners_details;
+    mqd_t miners_mq;
+    MSG_PACK_T *msg;
+    /* Initialize miner's new Q attributes */
+    miners_details.miners_id = i_miners_id;
+    miners_q_name = set_miners_q_name(miners_details.miners_id);
+    params_to_miners_q.conn_type = CREAT;
+    params_to_miners_q.msg_pass_type = NON_BLOCK;
     printf("Miner ID = %d, queue name = %s\n",miners_details.miners_id, miners_q_name);
 
-	/* Estabilish new Q for miner and sent MSG with connection details to Server, for it to connect*/
+    /* Estabilish new Q for miner and sent MSG with connection details to Server, for it to connect*/
     msg = malloc(sizeof(MSG_PACK_T) + sizeof(INIT_MSG_DATA_T));
     msg->type = INIT;
     ((INIT_MSG_DATA_T*)msg->data)->miners_id = miners_details.miners_id;
 
     miners_mq = open_queue(miners_q_name, params_to_miners_q);
-    msg_send(*io_servers_mq, (char*)msg);
-//    int tries = 0; int max_tries = 10;
-//    do{
-//        sleep(1);
-//        miners_mq = open_queue(miners_q_name, params_to_miners_q);
-//        tries++;
-//        if(miners_mq == -1)
-//        {
-//            printf("Connection to %s wasn't established (try :%d/%d)\n", miners_q_name, tries, max_tries);
-//        }
-//    } while(miners_mq == -1 && tries < max_tries);
-
 
     if(miners_mq == -1)
     {
@@ -137,9 +144,8 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
         exit(EXIT_FAILURE);
     }
 
+    msg_send(*io_servers_mq, (char*)msg);
     printf("Miner %d sent connection request on %s\n",miners_details.miners_id, miners_q_name);
-
-	return miners_mq;
 }
 
 //---------------------------------------------------------------------------
