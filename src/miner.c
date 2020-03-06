@@ -107,7 +107,7 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
 	/* Initialize miner's new Q attributes */
 	miners_details.miners_id = i_miners_id;
 	miners_q_name = set_miners_q_name(miners_details.miners_id);
-	params_to_miners_q.conn_type = CONNECT;
+	params_to_miners_q.conn_type = CREAT;
 	params_to_miners_q.msg_pass_type = NON_BLOCK;
     printf("Miner ID = %d, queue name = %s\n",miners_details.miners_id, miners_q_name);
 
@@ -116,17 +116,18 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
     msg->type = INIT;
     ((INIT_MSG_DATA_T*)msg->data)->miners_id = miners_details.miners_id;
 
+    miners_mq = open_queue(miners_q_name, params_to_miners_q);
     msg_send(*io_servers_mq, (char*)msg);
-    int tries = 0; int max_tries = 10;
-    do{
-        sleep(1);
-        miners_mq = open_queue(miners_q_name, params_to_miners_q);
-        tries++;
-        if(miners_mq == -1)
-        {
-            printf("Connection to %s wasn't established (try :%d/%d)\n", miners_q_name, tries, max_tries);
-        }
-    } while(miners_mq == -1 && tries < max_tries);
+//    int tries = 0; int max_tries = 10;
+//    do{
+//        sleep(1);
+//        miners_mq = open_queue(miners_q_name, params_to_miners_q);
+//        tries++;
+//        if(miners_mq == -1)
+//        {
+//            printf("Connection to %s wasn't established (try :%d/%d)\n", miners_q_name, tries, max_tries);
+//        }
+//    } while(miners_mq == -1 && tries < max_tries);
 
 
     if(miners_mq == -1)
