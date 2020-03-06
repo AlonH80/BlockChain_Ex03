@@ -119,12 +119,12 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
     msg_send(*io_servers_mq, (char*)msg);
     int tries = 0; int max_tries = 10;
     do{
+        sleep(1);
         miners_mq = open_queue(miners_q_name, params_to_miners_q);
         tries++;
         if(miners_mq == -1)
         {
             printf("Connection to %s wasn't established (try :%d)\n", miners_q_name, tries);
-            sleep(1);
         }
     } while(miners_mq == -1 && tries < max_tries);
 

@@ -26,7 +26,6 @@ mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params)
 	if(i_params.conn_type == CREAT)
 	{
 		flags |= O_CREAT;
-
 		if(mq_unlink(q_name) == -1)
 		{
 
