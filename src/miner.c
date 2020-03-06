@@ -124,7 +124,7 @@ set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
         tries++;
         if(miners_mq == -1)
         {
-            printf("Connection to %s wasn't established (try :%d)\n", miners_q_name, tries);
+            printf("Connection to %s wasn't established (try :%d/%d)\n", miners_q_name, tries, max_tries);
         }
     } while(miners_mq == -1 && tries < max_tries);
 
@@ -168,7 +168,7 @@ main(int argc, char *argv[])
 			*curr_head_block = ((MINE_MSG_DATA_T*)rcvd_msg->data)->block_detailes;
             printf("Miner #%d received block:",miner_id);
             print_bitcoin_block_data(curr_head_block);
-            printf("\n");
+            printf("\n-------------------------\n");
 		}
 		else
 		{
@@ -189,7 +189,7 @@ main(int argc, char *argv[])
 
             printf("Sent:\n");
             print_bitcoin_block_data(new_mined_block);
-            printf("\n");
+            printf("\n-------------------------\n");
 
             msg_send(servers_mq, (char *) response);
             sleep(2);   //To "slow down" the mining litle bit.

@@ -107,6 +107,7 @@ mqd_t join_miners_q(Uint i_miner_id_to_connect)
 	miners_q_name);
 	
 	params_to_q.conn_type = CREAT;
+	params_to_q.msg_pass_type = NON_BLOCK;
 	mqd_t tmp_q = open_queue(miners_q_name, params_to_q);
 	
 	if(tmp_q == -1)
