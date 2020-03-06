@@ -22,7 +22,7 @@ void print_mine_msg(bitcoin_block_data* i_block);
 void usage_err(int count);
 mqd_t set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq);
 mqd_t connect_server();
-mqd_t init_miner_queue(Uint i_miners_id);
+mqd_t init_miner_queue(Uint i_miners_id, mqd_t i_server_mq);
 
 //---------------------------------------------------------------------------
 //-----------------------Private Methods Implementations---------------------
@@ -89,7 +89,7 @@ mqd_t
 set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq)
 {
     *io_servers_mq = connect_server();
-    mqd_t miners_mq = init_miner_queue(i_miners_id)
+    mqd_t miners_mq = init_miner_queue(i_miners_id, **io_servers_mq);
 
 	return miners_mq;
 }
@@ -116,7 +116,7 @@ connect_server()
 
 PRIVATE
 mqd_t
-init_miner_queue(Uint i_miners_id)
+init_miner_queue(Uint i_miners_id, mqd_t i_server_mq)
 {
     char* miners_q_name;
     Q_PARAMS_T params_to_miners_q;
@@ -144,8 +144,10 @@ init_miner_queue(Uint i_miners_id)
         exit(EXIT_FAILURE);
     }
 
-    msg_send(*io_servers_mq, (char*)msg);
+    msg_send(i_server_mq, (char*)msg);
     printf("Miner %d sent connection request on %s\n",miners_details.miners_id, miners_q_name);
+
+    return miners_mq;
 }
 
 //---------------------------------------------------------------------------
