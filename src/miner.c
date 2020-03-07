@@ -89,8 +89,8 @@ connect_server()
     server_q_d = open_queue(MQ_NAME, params_to_servers_q);
     while(server_q_d == -1 && tries < max_tries)
     {
-        printf("Connection to server failed, retry in %d secs (try %d/%d)\n", sleep_factor, tries, max_tries);
         tries++;
+        printf("Connection to server failed, retry in %d secs (try %d/%d)\n", sleep_factor, tries, max_tries);
         sleep(sleep_factor);
         server_q_d = open_queue(MQ_NAME, params_to_servers_q);
     }
