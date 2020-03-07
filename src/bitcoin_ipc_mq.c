@@ -44,13 +44,6 @@ mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params)
 	{
         tmp_q = mq_open(q_name, flags);
 	}
-	
-//	if(tmp_q == -1)
-//	{
-//		fprintf(stderr, "mq_open failure of queue: %s, exiting...\n", q_name);
-//        perror("The error is:");
-//		exit(EXIT_FAILURE);
-//	}
 
 	return tmp_q;
 }
@@ -80,12 +73,11 @@ void msg_send(mqd_t q_descriptor, char* msg_to_send)
 {
 	ssize_t num_bytes_sent = 0;	
 	num_bytes_sent = mq_send(q_descriptor, msg_to_send, MQ_MAX_MSG_SIZE, 0);
-	
+
 	if (num_bytes_sent == -1)
 	{
-		fprintf(stderr, "mq_send failure on %d, exiting...\n", q_descriptor);
-		exit(EXIT_FAILURE);
-	}	
+		fprintf(stderr, "mq_send failure on %d, errno: \n", q_descriptor, errno);
+	}
 }
 
 EBoolType check_for_new_msgs(mqd_t queue_descriptor)
