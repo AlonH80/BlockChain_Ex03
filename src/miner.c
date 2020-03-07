@@ -138,7 +138,7 @@ PUBLIC
 int
 main(int argc, char *argv[])
 {
-	if (argc != 2)  { usage_err(argc); }
+	if (argc != 2)  { usage_err((Uint)argc, "name of miner's Q"); }
 	
 	bitcoin_block_data* curr_head_block = NULL;
     bitcoin_block_data* new_mined_block = NULL;

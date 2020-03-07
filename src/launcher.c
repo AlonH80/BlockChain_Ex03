@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 {
     if(argc != 2)
     {
-        usage_err((Uint)argc, "name of miner's Q");
+        usage_err((Uint)argc, "Amount of miners to launch");
     }
 
     launch((Uint)atoi(argv[1]));
