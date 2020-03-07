@@ -104,9 +104,9 @@ copy_string(char *target, char *source)
 
 PUBLIC
 void
-usage_err(int count)
+usage_err(Uint count, char* err_msg)
 {
     fprintf(stderr, "Expecting one argument and got %d arguments\n", --count);
-    fprintf(stderr, "The argument should be: name of miner's Q.\n");
+    fprintf(stderr, "The argument should be: %s .\n", err_msg);
     exit(EXIT_FAILURE);
 }
