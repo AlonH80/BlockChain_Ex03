@@ -20,6 +20,7 @@ print_bitcoin_block_data(bitcoin_block_data* block_to_print)
 	printf("prev_hash(0x%x), ", block_to_print->prev_hash);
 	printf("difficulty(%u), ", block_to_print->difficulty);
 	printf("nonce(%u)", block_to_print->nonce);
+	printf("\n----------------------");
 }
 
 PUBLIC

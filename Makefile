@@ -1,7 +1,7 @@
 .PHONY: all clean
 
 CC:= gcc 
-CFLAGS:= -std=c99 -g -D_POSIX_C_SOURCE -Wall
+CFLAGS:= -std=c99 -g -D_POSIX_C_SOURCE  -Wall
 LDFLAGS=-lm -lpthread -lz -lrt
 SRCDIR:= src
 SO_LINK_PARAMETERS:= -shared -fPIC
