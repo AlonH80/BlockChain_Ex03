@@ -72,7 +72,7 @@ typedef struct mine_msg_data
 //---------------------- Public Method Prototypes ---------------------------
 //---------------------------------------------------------------------------
 mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params);
-//EBoolType check_for_new_msgs(mqd_t queue_descriptor);
+EBoolType check_for_new_msgs(mqd_t queue_descriptor);
 mqd_t join_miners_q(Uint i_miner_id_to_connect);
 MSG_PACK_T* msg_rcv(mqd_t q_descriptor);
 void msg_send(mqd_t q_descriptor, char* msg_to_send);

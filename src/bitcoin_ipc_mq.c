@@ -80,13 +80,13 @@ void msg_send(mqd_t q_descriptor, char* msg_to_send)
 	}
 }
 
-//EBoolType check_for_new_msgs(mqd_t queue_descriptor)
-//{
-//	struct mq_attr attr_of_queue = {0};		//used for check if there are msgs on the server
-//	mq_getattr(queue_descriptor, &attr_of_queue);
-//
-//	return attr_of_queue.mq_curmsgs != EMPTY_QUEUE ? TRUE : FALSE;
-//}
+EBoolType check_for_new_msgs(mqd_t queue_descriptor)
+{
+	struct mq_attr attr_of_queue = {0};		//used for check if there are msgs on the server
+	mq_getattr(queue_descriptor, &attr_of_queue);
+
+	return attr_of_queue.mq_curmsgs != EMPTY_QUEUE ? TRUE : FALSE;
+}
 
 mqd_t join_miners_q(Uint i_miner_id_to_connect)
 {
