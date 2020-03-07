@@ -16,7 +16,6 @@ EBoolType verify_block_is_relevant(bitcoin_block_data* i_block);
 EBoolType mine_block(bitcoin_block_data* i_block, Uint i_miner_id, mqd_t mq_listen);
 void send_block_to_server(bitcoin_block_data* i_block);
 void print_mine_msg(bitcoin_block_data* i_block);
-void usage_err(int count);
 mqd_t set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq);
 mqd_t connect_server();
 mqd_t init_miner_queue(Uint i_miners_id, mqd_t i_server_mq);
@@ -55,15 +54,6 @@ print_mine_msg(bitcoin_block_data* i_block)
            i_block->relayed_by,
            i_block->height, 
            i_block->hash);
-}
-
-PRIVATE
-void 
-usage_err(int count)
-{
-  fprintf(stderr, "Expecting one argument and got %d arguments\n", --count);
-  fprintf(stderr, "The argument should be: name of miner's Q.\n");
-  exit(EXIT_FAILURE);
 }
 
 PRIVATE

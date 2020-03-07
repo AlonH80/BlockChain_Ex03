@@ -30,5 +30,8 @@ Uint get_current_time_stamp();
 Uint create_hash(char* data);
 Uint get_random();
 void copy_string(char *target, char *source);
+PRIVATE
+void
+usage_err(int count);
 
 #endif // !UTILITY_H

@@ -101,3 +101,12 @@ copy_string(char *target, char *source)
 {
     while ((*target++ = *source++));
 }
+
+PUBLIC
+void
+usage_err(int count)
+{
+    fprintf(stderr, "Expecting one argument and got %d arguments\n", --count);
+    fprintf(stderr, "The argument should be: name of miner's Q.\n");
+    exit(EXIT_FAILURE);
+}
