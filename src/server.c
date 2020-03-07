@@ -205,6 +205,7 @@ main(void)
 	}
 
     destroy_List(g_blockchain);
+	mq_unlink(MQ_NAME);
 
     return 0;
 }
