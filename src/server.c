@@ -6,7 +6,6 @@
 //----------------------------- Includes ------------------------------------
 //---------------------------------------------------------------------------
 #include "../include/server.h"
-#include "../include/bitcoin_ipc_mq.h"
 
 //---------------------------------------------------------------------------
 //--------------------------- Global Variables  -----------------------------
@@ -15,20 +14,6 @@ Singly_Linked_List* g_blockchain;
 bitcoin_block_data curr_head;
 mqd_t g_bitcoin_mq[MAX_NUM_OF_MINERS] = {0};
 Uint g_total_miners_joined = 0;
-
-//---------------------------------------------------------------------------
-//---------------------- Private Methods Prototypes -------------------------
-//---------------------------------------------------------------------------
-void initialize_list_with_genesis();
-void print_block_acceptance();
-void print_block_rejection(int i_difference, bitcoin_block_data* i_block_candidate);
-int verify_block(bitcoin_block_data* i_Block);
-bitcoin_block_data* createGenesis();
-void bitcoin_msg_rcv_and_handle(void);
-void treat_suggested_block(bitcoin_block_data* i_curr_candidate);
-void anounce_new_head();
-void handle_mine(MSG_PACK_T* rcvd_msg);
-void handle_init(MSG_PACK_T* rcvd_msg);
 
 //---------------------------------------------------------------------------
 //-----------------------Private Methods Implementations---------------------

@@ -6,9 +6,6 @@
 //----------------------------- Includes ------------------------------------
 //---------------------------------------------------------------------------
 #include "../include/miner.h"
-#include "../include/server.h"
-#include "../include/bitcoin_ipc_mq.h"
-#include "../include/bitcoin.h"
 
 //---------------------------------------------------------------------------
 //---------------------- Private Methods Prototypes -------------------------
@@ -23,24 +20,9 @@ void usage_err(int count);
 mqd_t set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq);
 mqd_t connect_server();
 mqd_t init_miner_queue(Uint i_miners_id, mqd_t i_server_mq);
-
 //---------------------------------------------------------------------------
 //-----------------------Private Methods Implementations---------------------
 //---------------------------------------------------------------------------
-PUBLIC
-bitcoin_block_data*
-initialize_new_block(bitcoin_block_data* i_head_block)
-{
-	bitcoin_block_data* new_block = malloc(sizeof(bitcoin_block_data));
-	new_block->height = i_head_block->height + 1;
-	new_block->time_stamp = get_current_time_stamp();
-	new_block->prev_hash = i_head_block->hash;
-	new_block->difficulty = DIFFICULTY;
-	new_block->nonce = PLACE_HOLDER_TILL_MINER_WILL_MINE;		// MINER responsibility
-	new_block->relayed_by = PLACE_HOLDER_TILL_MINER_WILL_MINE;  // MINER responsibility
-    new_block->hash = PLACE_HOLDER_TILL_MINER_WILL_MINE;		// MINER responsibility
-    return new_block;
-}
 
 PRIVATE
 EBoolType
