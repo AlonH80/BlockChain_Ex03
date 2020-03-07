@@ -15,11 +15,10 @@
 //------------------------ IPC MQ Definitions -------------------------------
 //---------------------------------------------------------------------------
 #define QUEUE_ATTR_INITIALIZER ((struct mq_attr){0, MQ_MAX_SIZE, MQ_MAX_MSG_SIZE, 0}) //{0}
-#define MQ_NAME             				"/server_mq"
+#define MQ_SERVER_NAME             				"/server_mq"
 #define MQ_MAX_SIZE       					10
 #define MQ_MAX_MSG_SIZE     				200
 #define MAX_NUM_OF_MINERS                   255
-//#define DELIMITER                           "@"
 #define EMPTY_QUEUE                         0
 #define CONCAT_POS					    	7
 #define MAX_LEN_OF_MINER_ID				    3			// 0 - 999
@@ -73,7 +72,7 @@ typedef struct mine_msg_data
 //---------------------- Public Method Prototypes ---------------------------
 //---------------------------------------------------------------------------
 mqd_t open_queue(const char* q_name, Q_PARAMS_T i_params);
-EBoolType check_for_new_msgs(mqd_t queue_descriptor);
+//EBoolType check_for_new_msgs(mqd_t queue_descriptor);
 mqd_t join_miners_q(Uint i_miner_id_to_connect);
 MSG_PACK_T* msg_rcv(mqd_t q_descriptor);
 void msg_send(mqd_t q_descriptor, char* msg_to_send);

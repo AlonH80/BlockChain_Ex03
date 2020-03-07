@@ -20,8 +20,8 @@ Uint g_total_miners_joined = 0;
 //---------------------- Private Methods Prototypes -------------------------
 //---------------------------------------------------------------------------
 void initialize_list_with_genesis();
-void print_block_acceptance();
-void print_block_rejection(int i_difference, bitcoin_block_data* i_block_candidate);
+//void print_block_acceptance();
+//void print_block_rejection(int i_difference, bitcoin_block_data* i_block_candidate);
 int verify_block(bitcoin_block_data* i_Block);
 bitcoin_block_data* createGenesis();
 void bitcoin_msg_rcv_and_handle(void);
@@ -56,36 +56,36 @@ initialize_list_with_genesis()
 	append_To_List(g_blockchain, genesis_block);
 }
 
-PRIVATE
-void
-print_block_acceptance(bitcoin_block_data* i_block_candidate)
-{
-	printf("Server: New block added by %d, attributes: ", i_block_candidate->relayed_by);
-	print_bitcoin_block_data(i_block_candidate);
-	printf("\n");
-}
-
-PRIVATE
-void
-print_block_rejection(int i_difference, bitcoin_block_data* i_block_candidate)
-{
-    if (i_difference == WRONG_HASH)
-    {
-        printf("Wrong hash for block #%d by miner %d, received %x but calculated %x\n",
-               i_block_candidate->height,
-               i_block_candidate->relayed_by,
-               i_block_candidate->hash,
-               create_hash_from_block(i_block_candidate));
-    }
-    else
-    {
-        printf("Wrong height for block #%d by miner %d, received %d but height is %d\n",
-               i_block_candidate->height,
-               i_block_candidate->relayed_by,
-               i_block_candidate->height,
-               curr_head.height + 1);
-    }
-}
+//PRIVATE
+//void
+//print_block_acceptance(bitcoin_block_data* i_block_candidate)
+//{
+//	printf("Server: New block added by %d, attributes: ", i_block_candidate->relayed_by);
+//	print_bitcoin_block_data(i_block_candidate);
+//	printf("\n");
+//}
+//
+//PRIVATE
+//void
+//print_block_rejection(int i_difference, bitcoin_block_data* i_block_candidate)
+//{
+//    if (i_difference == WRONG_HASH)
+//    {
+//        printf("Wrong hash for block #%d by miner %d, received %x but calculated %x\n",
+//               i_block_candidate->height,
+//               i_block_candidate->relayed_by,
+//               i_block_candidate->hash,
+//               create_hash_from_block(i_block_candidate));
+//    }
+//    else
+//    {
+//        printf("Wrong height for block #%d by miner %d, received %d but height is %d\n",
+//               i_block_candidate->height,
+//               i_block_candidate->relayed_by,
+//               i_block_candidate->height,
+//               curr_head.height + 1);
+//    }
+//}
 
 PRIVATE
 int
@@ -193,12 +193,12 @@ main(void)
     initialize_list_with_genesis(g_blockchain);
 	curr_head = *((bitcoin_block_data*)get_last_block(g_blockchain));
 
-	printf("Listening on %s\n", MQ_NAME);
+	printf("Listening on %s\n", MQ_SERVER_NAME);
 	
 	params_to_q.conn_type = CREAT;
 	
 	/*The main queue of the server is always @ position 0 (SERVER_Q)*/
-	g_bitcoin_mq[SERVER_Q] = open_queue(MQ_NAME, params_to_q);
+	g_bitcoin_mq[SERVER_Q] = open_queue(MQ_SERVER_NAME, params_to_q);
 
 	while(g_blockchain->length < 100)
     {
@@ -206,7 +206,7 @@ main(void)
 	}
 
     destroy_List(g_blockchain);
-	mq_unlink(MQ_NAME);
+	mq_unlink(MQ_SERVER_NAME);
 
     return 0;
 }
