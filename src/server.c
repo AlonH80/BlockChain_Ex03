@@ -184,6 +184,7 @@ PUBLIC
 int
 main(void)
 {
+    setpriority(PRIO_PROCESS, 0, -20);
 	Q_PARAMS_T params_to_q;
 		g_blockchain = initialize_Empty_List(
 	        sizeof(bitcoin_block_data),
