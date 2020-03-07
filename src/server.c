@@ -6,6 +6,7 @@
 //----------------------------- Includes ------------------------------------
 //---------------------------------------------------------------------------
 #include "../include/server.h"
+#include "../include/bitcoin_ipc_mq.h"
 
 //---------------------------------------------------------------------------
 //--------------------------- Global Variables  -----------------------------
@@ -14,13 +15,17 @@ Singly_Linked_List* g_blockchain;
 bitcoin_block_data curr_head;
 mqd_t g_bitcoin_mq[MAX_NUM_OF_MINERS] = {0};
 Uint g_total_miners_joined = 0;
+
 //---------------------------------------------------------------------------
 //---------------------- Private Methods Prototypes -------------------------
 //---------------------------------------------------------------------------
+void initialize_list_with_genesis();
+void print_block_acceptance();
+void print_block_rejection(int i_difference, bitcoin_block_data* i_block_candidate);
+int verify_block(bitcoin_block_data* i_Block);
+bitcoin_block_data* createGenesis();
 void bitcoin_msg_rcv_and_handle(void);
 void treat_suggested_block(bitcoin_block_data* i_curr_candidate);
-void treat_suggested_block(bitcoin_block_data* i_curr_candidate);
-void anounce_new_head();
 void anounce_new_head();
 void handle_mine(MSG_PACK_T* rcvd_msg);
 void handle_init(MSG_PACK_T* rcvd_msg);
@@ -86,17 +91,8 @@ PRIVATE
 int
 verify_block(bitcoin_block_data* i_block)
 {
-        printf("Received:\n");
-        print_bitcoin_block_data(i_block);
-        printf("\n");
-        printf("Received block with hash: %x\n", i_block->hash);
-        printf("Calc block hash: %x\n", create_hash_from_block(i_block));
-        printf("-------------------------\n");
-
     Uint next_block_height = curr_head.height + 1;
     Uint calculated_hash = create_hash_from_block(i_block);
-
-
     Uint result = (i_block->height != next_block_height)  ?
 		WRONG_HEIGHT : (i_block->hash != calculated_hash) ?
 		WRONG_HASH : EQUAL_BLOCKS;
@@ -206,7 +202,6 @@ main(void)
 	while(g_blockchain->length < 100)
     {
         bitcoin_msg_rcv_and_handle();
-        printf("Curr height is %d\n", curr_head.height);
 	}
 
     destroy_List(g_blockchain);

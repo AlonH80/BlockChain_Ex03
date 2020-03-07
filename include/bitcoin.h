@@ -33,7 +33,6 @@ typedef struct _bitcoin_block_data
 //---------------------------------------------------------------------------
 //---------------------- Public Method Prototypes ---------------------------
 //---------------------------------------------------------------------------
-bitcoin_block_data* initialize_new_block(bitcoin_block_data* i_head_block);
 void print_bitcoin_block_data(bitcoin_block_data* block_to_print);
 void release_bitcoin_block_data(pVoid block_to_release);
 

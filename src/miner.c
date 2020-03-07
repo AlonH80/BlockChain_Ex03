@@ -6,6 +6,9 @@
 //----------------------------- Includes ------------------------------------
 //---------------------------------------------------------------------------
 #include "../include/miner.h"
+#include "../include/server.h"
+#include "../include/bitcoin_ipc_mq.h"
+#include "../include/bitcoin.h"
 
 //---------------------------------------------------------------------------
 //---------------------- Private Methods Prototypes -------------------------
@@ -19,9 +22,24 @@ void print_mine_msg(bitcoin_block_data* i_block);
 mqd_t set_miners_q_and_connect_srv(Uint i_miners_id, mqd_t *io_servers_mq);
 mqd_t connect_server();
 mqd_t init_miner_queue(Uint i_miners_id, mqd_t i_server_mq);
+
 //---------------------------------------------------------------------------
 //-----------------------Private Methods Implementations---------------------
 //---------------------------------------------------------------------------
+PUBLIC
+bitcoin_block_data*
+initialize_new_block(bitcoin_block_data* i_head_block)
+{
+	bitcoin_block_data* new_block = malloc(sizeof(bitcoin_block_data));
+	new_block->height = i_head_block->height + 1;
+	new_block->time_stamp = get_current_time_stamp();
+	new_block->prev_hash = i_head_block->hash;
+	new_block->difficulty = DIFFICULTY;
+	new_block->nonce = PLACE_HOLDER_TILL_MINER_WILL_MINE;		// MINER responsibility
+	new_block->relayed_by = PLACE_HOLDER_TILL_MINER_WILL_MINE;  // MINER responsibility
+    new_block->hash = PLACE_HOLDER_TILL_MINER_WILL_MINE;		// MINER responsibility
+    return new_block;
+}
 
 PRIVATE
 EBoolType
@@ -77,12 +95,12 @@ connect_server()
 
     params_to_servers_q.conn_type = CONNECT;
     server_q_d = open_queue(MQ_NAME, params_to_servers_q);
+
     while(server_q_d == -1 && tries < max_tries)
     {
         tries++;
-        printf("Connection to server failed, retry in %d secs (try %d/%d)\n", sleep_factor, tries, max_tries);
+        printf("Connection to server failed, retry in %d seconds (try %d/%d)\n", sleep_factor, tries, max_tries);
         sleep(sleep_factor);
-        server_q_d = open_queue(MQ_NAME, params_to_servers_q);
     }
 
     if(server_q_d == -1)
@@ -137,8 +155,8 @@ init_miner_queue(Uint i_miners_id, mqd_t i_server_mq)
 PUBLIC
 int
 main(int argc, char *argv[])
-{
-	if (argc != 2)  { usage_err((Uint)argc, "name of miner's Q"); }
+{		
+    if (argc != 2)  { usage_err((Uint)argc, "name of miner's Q"); }
 	
 	bitcoin_block_data* curr_head_block = NULL;
     bitcoin_block_data* new_mined_block = NULL;
@@ -158,7 +176,7 @@ main(int argc, char *argv[])
 			*curr_head_block = ((MINE_MSG_DATA_T*)rcvd_msg->data)->block_detailes;
             printf("Miner #%d received block:",miner_id);
             print_bitcoin_block_data(curr_head_block);
-            printf("\n-------------------------\n");
+            printf("\n");
 		}
 		else
 		{
@@ -176,11 +194,6 @@ main(int argc, char *argv[])
             response = malloc(sizeof(MSG_PACK_T) + sizeof(MINE_MSG_DATA_T));
             response->type = MINE;
             ((MINE_MSG_DATA_T *) response->data)->block_detailes = *new_mined_block;
-
-            printf("Sent:\n");
-            print_bitcoin_block_data(new_mined_block);
-            printf("\n-------------------------\n");
-
             msg_send(servers_mq, (char *) response);
             sleep(2);   //To "slow down" the mining litle bit.
         }

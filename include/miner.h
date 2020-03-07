@@ -8,8 +8,5 @@
 //----------------------------- Includes ------------------------------------
 //---------------------------------------------------------------------------
 #include "utility.h"
-#include "server.h"
-#include "bitcoin_ipc_mq.h"
-#include "bitcoin.h"
 
 #endif // !MINER_H
