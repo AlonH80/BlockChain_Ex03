@@ -11,7 +11,7 @@
 //---------------------- Private Methods Prototypes -------------------------
 //---------------------------------------------------------------------------
 void launch(int i_amnt_of_miners);
-kill_miner(int i_child_pid);
+void kill_miner(int i_child_pid);
 
 //---------------------------------------------------------------------------
 //-----------------------Private Methods Implementations---------------------

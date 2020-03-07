@@ -13,6 +13,7 @@
 //---------------------------------------------------------------------------
 Singly_Linked_List* g_blockchain;
 bitcoin_block_data curr_head;
+Uint last_calculated_hash;
 mqd_t g_bitcoin_mq[MAX_NUM_OF_MINERS] = {0};
 Uint g_total_miners_joined = 0;
 
@@ -75,7 +76,7 @@ print_block_rejection(int i_difference, bitcoin_block_data* i_block_candidate)
                i_block_candidate->height,
                i_block_candidate->relayed_by,
                i_block_candidate->hash,
-               create_hash_from_block(i_block_candidate));
+               last_calculated_hash);
     }
     else
     {
@@ -92,9 +93,9 @@ int
 verify_block(bitcoin_block_data* i_block)
 {
     Uint next_block_height = curr_head.height + 1;
-    Uint calculated_hash = create_hash_from_block(i_block);
+    last_calculated_hash = create_hash_from_block(i_block);
     Uint result = (i_block->height != next_block_height)  ?
-		WRONG_HEIGHT : (i_block->hash != calculated_hash) ?
+		WRONG_HEIGHT : (i_block->hash != last_calculated_hash) ?
 		WRONG_HASH : EQUAL_BLOCKS;
 
 	return result;
