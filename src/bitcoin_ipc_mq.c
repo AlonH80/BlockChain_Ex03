@@ -76,7 +76,7 @@ void msg_send(mqd_t q_descriptor, char* msg_to_send)
 
 	if (num_bytes_sent == -1)
 	{
-		fprintf(stderr, "mq_send failure on %d, errno: \n", q_descriptor, errno);
+		fprintf(stderr, "mq_send failure on %d, errno: %d\n", q_descriptor, errno);
 	}
 }
 
