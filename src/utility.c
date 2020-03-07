@@ -95,13 +95,6 @@ create_hash_from_block(bitcoin_block_data* i_Block)
     return hashValue;
 }
 
-//PUBLIC
-//void
-//copy_string(char *target, char *source)
-//{
-//    while ((*target++ = *source++));
-//}
-
 PUBLIC
 void 
 usage_err(Uint count, char* err_msg)
